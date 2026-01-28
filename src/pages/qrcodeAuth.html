@@ -2,44 +2,77 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <title>Escaneie o QR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escaneie o QR Code</title>
     <style>
       body {
-        background: #0f2027;
-        color: #fff;
-        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #ffffff;
+        font-family: Arial, sans-serif;
         height: 100vh;
+        margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0;
       }
-
       .box {
         background: #1c1c1c;
-        padding: 32px;
-        border-radius: 12px;
+        padding: 36px 32px;
+        border-radius: 14px;
         text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        max-width: 380px;
+        width: 100%;
+        height: 400px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
       }
-
       img {
-        margin-top: 20px;
-        border-radius: 8px;
+        margin-top: 22px;
+        width: 250px;
+        height: 250px;
+        border-radius: 10px;
         background: #fff;
         padding: 10px;
+        border: 3px solid #25d366;
       }
-
-      h3 {
-        margin-bottom: 10px;
+      .info {
+        margin-top: 14px;
+        font-size: 0.85rem;
+        opacity: 0.6;
       }
     </style>
   </head>
   <body>
     <div class="box">
       <h3>📲 Escaneie o QR Code</h3>
-      <p>Abra o WhatsApp → Aparelhos conectados</p>
-      <img src="../../public/imgs/qrcode.png" />
+      <p>WhatsApp → Aparelhos conectados</p>
+      
+      <img id="qr" src="/imgs/qrcode.png" alt="QR Code" />
+
+      <div class="info" id="status">Iniciando conexão...</div>
     </div>
+
+    <script>
+      const img = document.getElementById("qr");
+      const status = document.getElementById("status");
+      const URL_IMAGEM = "/imgs/qrcode.png";
+
+      function atualizar() {
+        const novaUrl = `${URL_IMAGEM}?t=${Date.now()}`;
+        const loader = new Image();
+        
+        loader.onload = () => {
+          img.src = novaUrl;
+          status.innerText = "Atualizado em: " + new Date().toLocaleTimeString();
+        };
+        
+        loader.onerror = () => {
+          status.innerText = "Aguardando geração do QR Code...";
+        };
+
+        loader.src = novaUrl;
+      }
+
+      setInterval(atualizar, 59000);
+    </script>
   </body>
 </html>

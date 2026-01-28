@@ -19,9 +19,8 @@ app.use("/", whatsappRoutes);
 // segurança / CSP
 app.use(securityMiddleware);
 
-// arquivos estáticos (se precisar)
 app.use("/static", express.static(path.resolve("src/pages")));
-app.use(express.static(path.resolve("../../public")));
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(helmet({ contentSecurityPolicy: false }));
 
