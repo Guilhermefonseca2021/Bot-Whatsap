@@ -1,29 +1,41 @@
 import fs from "fs";
-import QRcode from "qrcode";
+import QRCode from "qrcode";
 import client from "../whatsapp/client-whatsapp";
 
 export function generateWhatsAppQRcode() {
-  client.on("qr", async (qr: string) => {
-    await QRcode.toFile("./public/imgs/qrcode.png", qr, {
-      width: 200,
-      margin: 1,
-    });
-    if (fs.existsSync("./public/imgs/qrcode.png")) {
-      // Asynchronously writes data to a file, replacing the file if it already exists.
-      fs.writeFile("./public/imgs/qrcode.png", qr, async (err) => {
-        await QRcode.toFile("./public/imgs/qrcode.png", qr, {
-          width: 200,
-          margin: 1,
+  if (!fs.existsSync("./public/imgs")) {
+    fs.mkdirSync("./public/imgs", { recursive: true });
+  }
+
+  client.on("qr", (qr: string) => {
+    console.log("📲 QR recebido");
+
+    const interval = setInterval(() => {
+      if (!fs.existsSync("./public/imgs/qrcode.png")) {
+        fs.writeFile("./public/imgs/qrcode.png", "", async (err) => {
+          if (err) {
+            console.error("Erro ao criar arquivo:", err);
+            return;
+          }
+
+          try {
+            await QRCode.toFile("./public/imgs/qrcode.png", qr, {
+              width: 200,
+              margin: 1,
+            });
+
+            console.log(
+              "\x1b[36m✅ QR Code gerado com sucesso\x1b[0m",
+            );
+          } catch (e) {
+            console.error("Erro ao gerar QR Code:", e);
+          }
         });
-        if (err) {
-          console.error("Erro ao salvar o QR Code:", err);
-        }
-      });
-      console.log(
-        "\x1b[36m✅ QR Code gerado com sucesso em ./public/imgs/qrcode.png \x1b[0m ",
-      );
-    } else {
-      console.log("\x1b[32m 📲 Escaneie o QR Code com o WhatsApp \x1b[0m ");
-    }
+      }
+
+      if (fs.existsSync("./public/imgs/qrcode.png")) {
+        clearInterval(interval);
+      }
+    }, 500);
   });
 }

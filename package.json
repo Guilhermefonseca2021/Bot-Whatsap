@@ -24,6 +24,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "helmet": "^8.1.0",
+    "lowdb": "^7.0.1",
     "qrcode": "^1.5.4",
     "whatsapp-bot": "file:",
     "whatsapp-web.js": "^1.26.0"

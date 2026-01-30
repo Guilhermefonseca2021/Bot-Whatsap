@@ -6,11 +6,13 @@ import securityMiddleware from "./middlewares/security";
 import { authConfig } from "./config/auth";
 import { generateWhatsAppQRcode } from "./utils/QRcode/generate-whatsapp-QRcode";
 import helmet from "helmet";
+import { initializeDB } from "./config/db";
 
 const app = express();
 
 whatsappConnect();
 generateWhatsAppQRcode();
+initializeDB();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

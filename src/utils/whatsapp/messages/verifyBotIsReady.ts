@@ -1,6 +1,8 @@
 import client from "../client-whatsapp";
 
-const contatos = ["5511999999999@c.us", "5511888888888@c.us"];
+const contatos = [
+  "5511999999999@c.us"
+];
 
 export function verifyMyBotIsReady() {
   client.on("ready", async () => {
