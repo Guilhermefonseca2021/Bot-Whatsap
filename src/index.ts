@@ -7,10 +7,12 @@ import { authConfig } from "./config/auth";
 import { generateWhatsAppQRcode } from "./utils/QRcode/generate-whatsapp-QRcode";
 import helmet from "helmet";
 import { initializeDB } from "./config/db";
+import { initWhatsAppAuthListeners } from "./utils/whatsapp/controllers/authenticate";
 
 const app = express();
 
 whatsappConnect();
+initWhatsAppAuthListeners();
 generateWhatsAppQRcode();
 initializeDB();
 

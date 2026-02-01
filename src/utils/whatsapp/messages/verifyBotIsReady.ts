@@ -1,22 +1,23 @@
+import { db } from "../../../config/db";
 import client from "../client-whatsapp";
 
-const contatos = [
-  "5511999999999@c.us"
-];
-
 export function verifyMyBotIsReady() {
-  client.on("ready", async () => {
+  client.once("ready", async () => {
     console.log("🤖 Bot pronto!");
 
+    const contatos = db.data?.contatos || [];
+
     for (const contato of contatos) {
+      const chatId = `${contato.telefone}@c.us`;
+
       try {
         await client.sendMessage(
-          contato,
+          chatId,
           "Olá! Essa mensagem foi enviada automaticamente 🚀",
         );
-        console.log(`✅ Mensagem enviada para ${contato}`);
+        console.log(`✅ Mensagem enviada para ${contato.telefone}`);
       } catch (err) {
-        console.error(`❌ Erro ao enviar para ${contato}`, err);
+        console.error(`❌ Erro ao enviar para ${contato.telefone}`, err);
       }
     }
   });

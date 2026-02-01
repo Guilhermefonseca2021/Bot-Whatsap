@@ -1,13 +1,15 @@
 import path from "path";
-import client from "../utils/whatsapp/client-whatsapp";
 import { Request, Response } from "express";
 import { db } from "../config/db";
-
-let currentQR: string | null = null;
+import {
+  getAuthStatus,
+  getCurrentQR,
+  setCurrentQR
+} from "../utils/whatsapp/controllers/authenticate";
+import client from "../utils/whatsapp/client-whatsapp";
 
 client.on("qr", (qr: string) => {
-  currentQR = qr;
-  console.log("📸 QR Code atualizado");
+  setCurrentQR(qr);
 });
 
 export const authbot = (req: Request, res: Response): void => {
@@ -31,11 +33,21 @@ export async function startQr(req: Request, res: Response): Promise<void> {
   res.redirect("/start/qr");
 }
 
-export const getQr = (req: Request, res: Response): void => {
-  if (!currentQR) {
-    res.sendStatus(204);
+export function getQr(req: Request, res: Response): void {
+  if (getAuthStatus()) {
+    res.redirect("/");
+    return;
+  }
+
+  if (!getCurrentQR()) {
+    res.sendFile(path.resolve("src/pages/waitingQr.html"));
     return;
   }
 
   res.sendFile(path.resolve("src/pages/qrcodeAuth.html"));
 };
+
+export function home(req: Request, res: Response): void {
+    res.sendFile(path.resolve("src/pages/home.html"));
+  
+}
