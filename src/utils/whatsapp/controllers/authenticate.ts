@@ -1,29 +1,23 @@
+import { setCurrentQR, setAuthStatus } from "../../QRcode/generate-whatsapp-QRcode";
 import client from "../client-whatsapp";
 
-let isAuthenticated = false;
-let currentQR: string | null = null;
+export function monitorConnectWhatsapp() {
+  client.on("ready", async () => {
+    setAuthStatus(true);
+    setCurrentQR(""); 
 
-export function initWhatsAppAuthListeners() {
-  client.on("authenticated", () => {
-    isAuthenticated = true;
-    currentQR = null;
-    console.log("✅ WhatsApp Authenticated");
+    try {
+      // Pega o seu próprio número ou o número que acabou de conectar
+      const myNumber = client.info.wid._serialized;
+      
+      await client.sendMessage(myNumber, "Olá! Bem-vindo. Serei seu assistente.");
+      console.log("✅ Mensagem de boas-vindas enviada e status atualizado.");
+    } catch (error) {
+      console.error("Erro ao enviar mensagem inicial:", error);
+    }
   });
 
-  client.on("auth_failure", (msg) => {
-    console.error("❌ AUTH FAILURE:", msg);
-    isAuthenticated = false;
+  client.on("disconnected", () => {
+    setAuthStatus(false);
   });
-}
-
-export function getAuthStatus() {
-  return isAuthenticated;
-}
-
-export function getCurrentQR() {
-  return currentQR;
-}
-
-export function setCurrentQR(qr: string) {
-  currentQR = qr;
 }

@@ -16,7 +16,7 @@ describe("generateWhatsAppQRcode", async () => {
     );
   });
   it("should generate a QR code image file", async () => {
-  client.on("qr", (qr: string) => {
+  client.on("qr", async (qr: string) => {
 
     const qrCodeData = "Sample QR Code Data";
     await QRCode.toFile("./public/imgs/qrcode.png", qr, {
@@ -26,6 +26,6 @@ describe("generateWhatsAppQRcode", async () => {
 
     fs.writeFileSync("./public/imgs/qrcode.png", qrCodeData);
   })
-    assert(fs.existsSync(qrCodePath), "QR code image file should be created");
+    assert(fs.existsSync("./public/imgs/qrcode.png"), "QR code image file should be created");
   });
 });

@@ -45,7 +45,7 @@
     <div class="box">
       <h3>📲 Escaneie o QR Code</h3>
       <p>WhatsApp → Aparelhos conectados</p>
-      
+
       <img id="qr" src="/imgs/qrcode.png" alt="QR Code" />
 
       <div class="info" id="status">Iniciando conexão...</div>
@@ -57,22 +57,21 @@
       const URL_IMAGEM = "/imgs/qrcode.png";
 
       function atualizar() {
-        const novaUrl = `${URL_IMAGEM}?t=${Date.now()}`;
-        const loader = new Image();
-        
-        loader.onload = () => {
-          img.src = novaUrl;
-          status.innerText = "Atualizado em: " + new Date().toLocaleTimeString();
-        };
-        
-        loader.onerror = () => {
-          status.innerText = "Aguardando geração do QR Code...";
-        };
-
-        loader.src = novaUrl;
+        // O '?t=' força o navegador a baixar a imagem de novo do servidor
+        const novaUrl = `/imgs/qrcode.png?t=${new Date().getTime()}`;
+        img.src = novaUrl;
+        status.innerText = "Atualizado em: " + new Date().toLocaleTimeString();
       }
 
-      setInterval(atualizar, 59000);
+      setInterval(atualizar, 120000);
+      setInterval(async () => {
+        const response = await fetch("/auth-status");
+        const data = await response.json();
+
+        if (data.authenticated) {
+          window.location.href = "/";
+        }
+      }, 3000); // Reduzi para 3 segundos para ser mais responsivo
     </script>
   </body>
 </html>

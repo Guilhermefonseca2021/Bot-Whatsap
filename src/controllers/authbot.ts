@@ -7,6 +7,7 @@ import {
   setCurrentQR
 } from "../utils/whatsapp/controllers/authenticate";
 import client from "../utils/whatsapp/client-whatsapp";
+import { landMessageUsersToSent } from "../utils/whatsapp/messages/landMessagesUsertoSent";
 
 client.on("qr", (qr: string) => {
   setCurrentQR(qr);
@@ -31,6 +32,11 @@ export async function startQr(req: Request, res: Response): Promise<void> {
     await db.write();
   }
   res.redirect("/start/qr");
+}
+
+export function checkStatus(req: Request, res: Response): void {
+  const isAuth = getAuthStatus();
+  res.json({ authenticated: isAuth });
 }
 
 export function getQr(req: Request, res: Response): void {
