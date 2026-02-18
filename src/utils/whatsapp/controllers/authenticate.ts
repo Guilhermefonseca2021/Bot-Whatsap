@@ -7,7 +7,6 @@ export function monitorConnectWhatsapp() {
     setCurrentQR(""); 
 
     try {
-      // Pega o seu próprio número ou o número que acabou de conectar
       const myNumber = client.info.wid._serialized;
       
       await client.sendMessage(myNumber, "Olá! Bem-vindo. Serei seu assistente.");

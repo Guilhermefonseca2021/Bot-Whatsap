@@ -1,13 +1,8 @@
 import path from "path";
 import { Request, Response } from "express";
 import { db } from "../config/db";
-import {
-  getAuthStatus,
-  getCurrentQR,
-  setCurrentQR
-} from "../utils/whatsapp/controllers/authenticate";
 import client from "../utils/whatsapp/client-whatsapp";
-import { landMessageUsersToSent } from "../utils/whatsapp/messages/landMessagesUsertoSent";
+import { getAuthStatus, getCurrentQR, setCurrentQR } from "../utils/QRcode/generate-whatsapp-QRcode";
 
 client.on("qr", (qr: string) => {
   setCurrentQR(qr);
@@ -55,5 +50,4 @@ export function getQr(req: Request, res: Response): void {
 
 export function home(req: Request, res: Response): void {
     res.sendFile(path.resolve("src/pages/home.html"));
-  
 }

@@ -1,6 +1,7 @@
 import express from "express";
 import whatsappConnect from "./utils/whatsapp/whatsapp-connect";
 import path from "path";
+import client from './utils/whatsapp/client-whatsapp';
 import whatsappRoutes from "./routes/whatsapRoutes";
 import securityMiddleware from "./middlewares/security";
 import { authConfig } from "./config/auth";
@@ -12,7 +13,6 @@ import { monitorConnectWhatsapp } from "./utils/whatsapp/controllers/authenticat
 const app = express();
 
 whatsappConnect();
-initWhatsAppAuthListeners();
 generateWhatsAppQRcode();
 monitorConnectWhatsapp()
 initializeDB();
@@ -26,6 +26,22 @@ app.use(securityMiddleware);
 
 app.use("/static", express.static(path.resolve("src/pages")));
 app.use(express.static(path.join(__dirname, '../public')));
+
+
+const handleShutdown = async (signal: string) => {
+    console.log(`\nSinal ${signal} recebido. Fechando navegador do WhatsApp...`);
+    try {
+        await client.destroy();
+        console.log("Sessão salva e navegador fechado com sucesso.");
+    } catch (error) {
+        console.error("Erro ao fechar o cliente:", error);
+    } finally {
+        process.exit(0);
+    }
+};
+
+process.on('SIGINT', () => handleShutdown('SIGINT'));
+process.on('SIGTERM', () => handleShutdown('SIGTERM'));
 
 app.use(helmet({ contentSecurityPolicy: false }));
 

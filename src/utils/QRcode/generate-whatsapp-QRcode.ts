@@ -23,7 +23,6 @@ export function generateWhatsAppQRcode() {
     console.log("📲 QR recebido, processando arquivo...");
     setCurrentQR(qr);
 
-    // 1. Se o arquivo já existe, removemos para garantir uma escrita limpa
     if (fs.existsSync(pathFile)) {
       try {
         fs.unlinkSync(pathFile);
@@ -32,8 +31,6 @@ export function generateWhatsAppQRcode() {
       }
     }
 
-    // 2. Geramos o novo QR Code
-    // Usamos o QRCode.toFile que é mais estável que o fs.writeFile manual para buffers de imagem
     QRCode.toFile(pathFile, qr, {
       width: 250,
       margin: 1
@@ -46,7 +43,6 @@ export function generateWhatsAppQRcode() {
     });
   });
 
-  // Limpeza: Quando autenticar, deleta o QR para não expor a sessão
   client.on("authenticated", () => {
     isAuthenticated = true;
     if (fs.existsSync(pathFile)) {

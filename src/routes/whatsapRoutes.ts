@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authbot, startQr, getQr, home } from "../controllers/authbot";
-import { getAuthStatus } from "../utils/whatsapp/controllers/authenticate";
+import { getAuthStatus } from "../utils/QRcode/generate-whatsapp-QRcode";
 
 const router = Router();
 
