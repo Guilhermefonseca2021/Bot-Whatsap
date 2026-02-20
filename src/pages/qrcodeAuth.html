@@ -57,7 +57,6 @@
       const URL_IMAGEM = "/imgs/qrcode.png";
 
       function atualizar() {
-        // O '?t=' força o navegador a baixar a imagem de novo do servidor
         const novaUrl = `/imgs/qrcode.png?t=${new Date().getTime()}`;
         img.src = novaUrl;
         status.innerText = "Atualizado em: " + new Date().toLocaleTimeString();
@@ -71,7 +70,7 @@
         if (data.authenticated) {
           window.location.href = "/";
         }
-      }, 3000); // Reduzi para 3 segundos para ser mais responsivo
+      }, 3000); 
     </script>
   </body>
 </html>

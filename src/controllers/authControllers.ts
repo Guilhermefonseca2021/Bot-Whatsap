@@ -1,17 +1,12 @@
 import path from "path";
 import { Request, Response } from "express";
 import { db } from "../config/db";
-import {
-  getAuthStatus,
-  getCurrentQR,
-  setCurrentQR
-} from "../utils/whatsapp/controllers/authenticate";
 import client from "../utils/whatsapp/client-whatsapp";
-import { landMessageUsersToSent } from "../utils/whatsapp/messages/landMessagesUsertoSent";
-
-client.on("qr", (qr: string) => {
-  setCurrentQR(qr);
-});
+import {
+  setCurrentQR,
+  getCurrentQR,
+  getAuthStatus
+} from "../utils/QRcode/generate-whatsapp-QRcode";
 
 export const authbot = (req: Request, res: Response): void => {
   res.sendFile(path.resolve("src/pages/authenticate.html"));
@@ -31,6 +26,7 @@ export async function startQr(req: Request, res: Response): Promise<void> {
     db.data?.contatos.push({ telefone: phone });
     await db.write();
   }
+
   res.redirect("/start/qr");
 }
 
@@ -39,7 +35,10 @@ export function checkStatus(req: Request, res: Response): void {
   res.json({ authenticated: isAuth });
 }
 
-export function getQr(req: Request, res: Response): void {
+export async function getQr(req: Request, res: Response): Promise<void> {
+  // NÃO FAZ LOGOUT AQUI
+  // NÃO REINICIALIZA AQUI
+
   if (getAuthStatus()) {
     res.redirect("/");
     return;
@@ -51,9 +50,8 @@ export function getQr(req: Request, res: Response): void {
   }
 
   res.sendFile(path.resolve("src/pages/qrcodeAuth.html"));
-};
+}
 
 export function home(req: Request, res: Response): void {
-    res.sendFile(path.resolve("src/pages/home.html"));
-  
+  res.sendFile(path.resolve("src/pages/home.html"));
 }
