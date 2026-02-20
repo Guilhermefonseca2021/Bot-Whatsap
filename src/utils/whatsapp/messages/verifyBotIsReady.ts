@@ -1,5 +1,5 @@
 import { db } from "../../../config/db";
-import client from "../client-whatsapp";
+import { client } from "../client-whatsapp";
 
 export function verifyMyBotIsReady() {
   client.once("ready", async () => {

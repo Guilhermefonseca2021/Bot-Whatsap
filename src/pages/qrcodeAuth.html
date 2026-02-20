@@ -46,31 +46,31 @@
       <h3>📲 Escaneie o QR Code</h3>
       <p>WhatsApp → Aparelhos conectados</p>
 
-      <img id="qr" src="/imgs/qrcode.png" alt="QR Code" />
+      <img id="qr" src="/public/qrcode.png" alt="QR Code" />
 
       <div class="info" id="status">Iniciando conexão...</div>
     </div>
 
     <script>
       const img = document.getElementById("qr");
-      const status = document.getElementById("status");
-      const URL_IMAGEM = "/imgs/qrcode.png";
 
-      function atualizar() {
-        const novaUrl = `/imgs/qrcode.png?t=${new Date().getTime()}`;
-        img.src = novaUrl;
-        status.innerText = "Atualizado em: " + new Date().toLocaleTimeString();
+      function atualizarImagem() {
+        img.src = `/public/qrcode.png?t=${new Date().getTime()}`;
       }
 
-      setInterval(atualizar, 120000);
-      setInterval(async () => {
-        const response = await fetch("/auth-status");
-        const data = await response.json();
+      setTimeout(atualizarImagem, 500);
 
-        if (data.authenticated) {
-          window.location.href = "/";
+      setInterval(async () => {
+        try {
+          const response = await fetch("/check-status");
+          const data = await response.json();
+          if (data.authenticated) {
+            window.location.href = "/dashboard";
+          }
+        } catch (e) {
+          console.log("Aguardando server...");
         }
-      }, 3000); 
+      }, 3000);
     </script>
   </body>
 </html>

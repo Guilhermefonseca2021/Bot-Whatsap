@@ -6,6 +6,19 @@
     "dev": "nodemon ./src/index.ts",
     "test": "tsx --test --watch"
   },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ext": "ts,js,json",
+    "ignore": [
+      "public/imgs/*",
+      "sessions/*",
+      ".wwebjs_auth/*",
+      ".wwebjs_cache/*",
+      "src/db/database.json"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

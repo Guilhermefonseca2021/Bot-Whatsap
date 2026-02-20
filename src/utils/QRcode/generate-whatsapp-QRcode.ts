@@ -1,76 +1,50 @@
-import fs from "fs";
-import QRCode from "qrcode";
-import client from "../whatsapp/client-whatsapp";
+import * as fs from "fs";
+import * as path from "path";
+import QRCode from "qrcode"; // Use apenas uma importação
 
-let globalQR = "";
-let isAuthenticated = false;
+let currentQR: string | null = null;
+const sessionState = { isAuthenticated: false };
 
-export const setCurrentQR = (qr: string) => {
-  globalQR = qr;
+const qrPath = path.resolve(process.cwd(), "public", "qrcode.png");
+
+export const setCurrentQR = (value: string | null): void => {
+    currentQR = value;
 };
 
-export const getCurrentQR = () => globalQR;
-
-export const getAuthStatus = () => isAuthenticated;
-
-export const setAuthStatus = (status: boolean) => {
-  isAuthenticated = status;
+export const getCurrentQR = (): string | null => currentQR;
+export const getAuthStatus = (): boolean => sessionState.isAuthenticated;
+export const setAuthStatus = (value: boolean): void => {
+    sessionState.isAuthenticated = value;
 };
 
-export function generateWhatsAppQRcode() {
-  const dir = "./public/imgs";
-  const pathFile = `${dir}/qrcode.png`;
+export const generateQRCodePayload = async (qr: string): Promise<void> => {
+    currentQR = qr; 
+    console.log("🛠️ Tentando gerar QR em:", qrPath);
 
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+    try {
+        const dir = path.dirname(qrPath);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
-  // 🔹 QR RECEBIDO
-  client.on("qr", (qr: string) => {
-    console.log("📲 QR recebido");
-    setCurrentQR(qr);
-    setAuthStatus(false);
-
-    if (fs.existsSync(pathFile)) {
-      try {
-        fs.unlinkSync(pathFile);
-      } catch (err) {
-        console.error("Erro ao limpar QR antigo:", err);
-      }
-    }
-
-    QRCode.toFile(
-      pathFile,
-      qr,
-      {
-        width: 250,
-        margin: 1
-      },
-      (err) => {
-        if (err) {
-          console.error("Erro ao salvar qrcode.png:", err);
-        } else {
-          console.log("✅ QR Code salvo com sucesso");
+        if (fs.existsSync(qrPath)) {
+            fs.unlinkSync(qrPath);
         }
-      }
-    );
-  });
 
-  // 🔹 QUANDO ESTIVER PRONTO
-  client.on("ready", () => {
-    console.log("🤖 WhatsApp pronto!");
-    setAuthStatus(true);
-    setCurrentQR("");
-
-    if (fs.existsSync(pathFile)) {
-      fs.unlinkSync(pathFile);
-      console.log("🧹 QR removido após autenticação");
+        await QRCode.toFile(qrPath, qr, {
+            width: 250,
+            margin: 1,
+            color: { dark: "#000000", light: "#ffffff" }
+        });
+        
+        console.log("✅ Novo QR Code gerado e salvo com sucesso!");
+    } catch (err) {
+        console.error("❌ Erro físico ao salvar QR:", err);
     }
-  });
+};
 
-  // 🔹 SE DESCONECTAR
-  client.on("disconnected", () => {
-    console.log("❌ WhatsApp desconectado");
-    setAuthStatus(false);
-  });
-}
+export const handleAuthSuccess = (): void => {
+    sessionState.isAuthenticated = true;
+    currentQR = null; 
+    if (fs.existsSync(qrPath)) {
+        fs.unlinkSync(qrPath);
+    }
+};

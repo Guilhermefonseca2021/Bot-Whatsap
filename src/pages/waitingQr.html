@@ -1,99 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <title>Conectando Bot</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-      height: 100vh;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .container {
-      text-align: center;
-      max-width: 400px;
-      padding: 30px;
-    }
-
-    .bot-img {
-      width: 160px;
-      margin-bottom: 20px;
-      animation: float 2.5s ease-in-out infinite;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 0.95rem;
-      opacity: 0.8;
-      margin-bottom: 25px;
-    }
-
-    .loader {
-      width: 50px;
-      height: 50px;
-      border: 5px solid rgba(255, 255, 255, 0.2);
-      border-top: 5px solid #25d366;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+  <head>
+    <meta charset="UTF-8" />
+    <title>Conectando Bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
       }
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(0px);
+      body {
+        height: 100vh;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      50% {
-        transform: translateY(-10px);
+      .container {
+        text-align: center;
+        max-width: 400px;
+        padding: 30px;
       }
-      100% {
-        transform: translateY(0px);
+      .bot-img {
+        width: 160px;
+        margin-bottom: 20px;
+        animation: float 2.5s ease-in-out infinite;
       }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <img
-      class="bot-img"
-      src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
-      alt="Bot aguardando"
-    />
+      h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+      p {
+        font-size: 0.95rem;
+        opacity: 0.8;
+        margin-bottom: 25px;
+      }
+      .loader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.2);
+        border-top: 5px solid #25d366;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img
+        class="bot-img"
+        src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png"
+        alt="Bot aguardando"
+      />
+      <h1>Conectando ao WhatsApp</h1>
+      <p>Aguarde alguns segundos enquanto o bot se prepara 🤖</p>
+      <div class="loader"></div>
+    </div>
 
-    <h1>Conectando ao WhatsApp</h1>
-    <p>
-      Aguarde alguns segundos enquanto o bot se prepara 🤖
-    </p>
+    <script>
+      setInterval(async () => {
+        const response = await fetch("/check-status");
+        const data = await response.json();
 
-    <div class="loader"></div>
-  </div>
-
-  <script>
-    setTimeout(() => {
-      window.location.reload();
-    }, 3000);
-  </script>
-</body>
+        if (data.authenticated) {
+          window.location.href = "/dashboard";
+        } else if (data.hasQR) {
+          // Se o arquivo físico foi gerado, ele muda de página sozinho!
+          window.location.href = "/start/qr";
+        }
+      }, 2000);
+    </script>
+  </body>
 </html>

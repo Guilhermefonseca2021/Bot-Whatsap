@@ -1,5 +1,5 @@
-import { setAuthStatus, setCurrentQR } from "../../QRcode/generate-whatsapp-QRcode";
-import { client } from "../client-whatsapp";
+import { setAuthStatus, setCurrentQR } from "../QRcode/generate-whatsapp-QRcode";
+import { client } from "./client-whatsapp";
 
 export function monitorConnectWhatsapp() {
   client.on("ready", async () => {
@@ -16,7 +16,9 @@ export function monitorConnectWhatsapp() {
     }
   });
 
-  client.on("disconnected", () => {
+  client.on("disconnected", (reason: string) => {
+    console.log("❌ WhatsApp desconectado:", reason);
     setAuthStatus(false);
+    setCurrentQR(""); 
   });
 }

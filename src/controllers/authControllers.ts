@@ -1,57 +1,58 @@
 import path from "path";
 import { Request, Response } from "express";
-import { db } from "../config/db";
-import client from "../utils/whatsapp/client-whatsapp";
-import {
-  setCurrentQR,
-  getCurrentQR,
-  getAuthStatus
-} from "../utils/QRcode/generate-whatsapp-QRcode";
+import { generateQRCodePayload, getAuthStatus, setAuthStatus } from "../utils/QRcode/generate-whatsapp-QRcode";
+import { getCurrentQR } from "../utils/whatsapp/whatsapp-connect";
+import * as fs from "fs";
 
-export const authbot = (req: Request, res: Response): void => {
-  res.sendFile(path.resolve("src/pages/authenticate.html"));
+const qrPath = path.resolve("public/qrcode.png");
+
+export const cleanAndGenerateQR = async (qr: string): Promise<void> => {
+    try {
+        generateQRCodePayload(qr);
+        
+        console.log("✅ Imagem QR gerada com sucesso.");
+    } catch (err) {
+        console.error("❌ Erro ao gerar QR:", err);
+    }
 };
 
-export async function startQr(req: Request, res: Response): Promise<void> {
-  const { phone } = req.body;
+export const finalizeAuth = (): void => {
+    setAuthStatus(true);
 
-  if (!phone) {
-    res.status(400).send("Telefone é obrigatório");
-    return;
-  }
+    if (fs.existsSync(qrPath)) {
+        fs.unlinkSync(qrPath);
+        console.log("Arquivo de QR Code limpo após autenticação.");
+    }
+};
 
-  const exists = db.data?.contatos.some((c) => c.telefone === phone);
+export async function getQr(req: Request, res: Response): Promise<void> {
+    if (getAuthStatus()) {
+        res.redirect("/dashboard");
+        return;
+    }
 
-  if (!exists) {
-    db.data?.contatos.push({ telefone: phone });
-    await db.write();
-  }
+    if (!getCurrentQR()) {
+        res.sendFile(path.resolve("src/pages/waitingQr.html"));
+        return;
+    }
 
-  res.redirect("/start/qr");
+    res.sendFile(path.resolve("src/pages/qrcodeAuth.html"));
+}
+
+export function dashboard(req: Request, res: Response): void {
+    if (!getAuthStatus()) {
+        res.redirect("/start/qr"); 
+        return;
+    }
+    res.sendFile(path.resolve("src/pages/dashboard.html"));
 }
 
 export function checkStatus(req: Request, res: Response): void {
-  const isAuth = getAuthStatus();
-  res.json({ authenticated: isAuth });
-}
-
-export async function getQr(req: Request, res: Response): Promise<void> {
-  // NÃO FAZ LOGOUT AQUI
-  // NÃO REINICIALIZA AQUI
-
-  if (getAuthStatus()) {
-    res.redirect("/");
-    return;
-  }
-
-  if (!getCurrentQR()) {
-    res.sendFile(path.resolve("src/pages/waitingQr.html"));
-    return;
-  }
-
-  res.sendFile(path.resolve("src/pages/qrcodeAuth.html"));
-}
-
-export function home(req: Request, res: Response): void {
-  res.sendFile(path.resolve("src/pages/home.html"));
+    const hasQR = getCurrentQR() !== null;
+    const isAuth = getAuthStatus();
+    
+    res.json({ 
+        hasQR: hasQR,
+        authenticated: isAuth 
+    });
 }

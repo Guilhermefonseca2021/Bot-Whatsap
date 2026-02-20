@@ -1,19 +1,19 @@
 import { Client, LocalAuth } from 'whatsapp-web.js';
 
+export const getAuth = (): boolean => {
+    return false; 
+};
 
-const client = new Client({
-    authStrategy: new LocalAuth(), 
-    puppeteer: {
-        headless: true,  
-        args: [
-            '--no-sandbox',  
-            '--disable-setuid-sandbox',
-            '--disable-extensions',
-            '--disable-dev-shm-usage',
-            '--disable-gpu',
-            '--disable-gl-drawing-for-tests'
-        ]
-    }
+export const setAuth = (status: boolean): void => {
+    console.log(`Sessão atualizada: ${status}`);
+};
+
+
+export const client = new Client({
+    authStrategy: new LocalAuth(),
+    puppeteer: { args: ['--no-sandbox'] }
 });
 
-export default client;
+export const sessionState = {
+    isAuthenticated: false
+};

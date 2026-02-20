@@ -1,15 +1,28 @@
 import { Router } from "express";
-import { authbot, startQr, getQr, home } from "../controllers/authControllers";
-import { getAuthStatus } from "../utils/QRcode/generate-whatsapp-QRcode";
+import { getQr, dashboard, checkStatus } from "../controllers/authControllers";
+import { client } from "../utils/whatsapp/client-whatsapp";
+import { handleLog, handleStatus, handleWelcome } from "../controllers/messageControllers";
 
 const router = Router();
 
-router.get("/auth", authbot);
-router.post("/start/qr", startQr);
 router.get("/start/qr", getQr);
-router.get("/", home);
-router.get("/auth-status", (req, res) => {
-  res.json({ authenticated: getAuthStatus() });
-});
+router.get("/dashboard", dashboard);
+router.get("/check-status", checkStatus); 
+
+export const registerBotRoutes = (): void => {
+    client.on('message', async (msg) => {
+        const text = msg.body.toLowerCase();
+        
+        handleLog(msg);
+
+        if (text === 'ajuda' || text === 'help') {
+            await handleWelcome(msg);
+        } else if (text === '!status') {
+            await handleStatus(msg);
+        }
+    });
+
+    console.log("✅ Rotas de eventos do WhatsApp registradas.");
+};
 
 export default router;
