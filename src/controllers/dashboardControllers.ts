@@ -1,14 +1,20 @@
-import { Request, Response } from "express";
-import client from "../utils/whatsapp/client-whatsapp";
-import { db } from "../config/db";
+import { Request, Response } from 'express';
 
-export async function getDashboardStats(req: Request, res: Response): Promise<void> {
-  const contactsCount = db.data?.contatos.length || 0;
-  const state = await client.getState().catch(() => "OFFLINE");
-  
-  res.json({
-    contactsCount,
-    status: state === "CONNECTED" ? "Online" : "Desconectado",
-    messagesSent: 0 
-  });
+interface BotStats {
+  contatos: number;
+  mensagens: number;
+  status: string;
+  ultimaAtividade: string;
 }
+
+export const index = (req: Request, res: Response): void => {
+  res.sendFile('dashboard.html', { root: './views' });
+};
+
+export const listContacts = (req: Request, res: Response): void => {
+  res.send("<h1>Lista de Contatos</h1>");
+};
+
+export const logout = (req: Request, res: Response): void => {
+  res.redirect('/dashboard');
+};

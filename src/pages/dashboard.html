@@ -1,168 +1,204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard • Bot WhatsApp</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard • Bot WhatsApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+      }
 
-    body {
-      min-height: 100vh;
-      background: #0f2027;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #fff;
-    }
+      body {
+        min-height: 100vh;
+        background: #0f2027;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        color: #fff;
+      }
 
-    header {
-      padding: 20px 30px;
-      background: rgba(0,0,0,0.3);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+      header {
+        padding: 20px 30px;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-    header h1 {
-      font-size: 1.4rem;
-    }
+      header h1 {
+        font-size: 1.4rem;
+      }
 
-    header span {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
+      header span {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
 
-    .container {
-      padding: 30px;
-      max-width: 1200px;
-      margin: auto;
-    }
+      .container {
+        padding: 30px;
+        max-width: 1200px;
+        margin: auto;
+      }
 
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 30px;
-    }
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 30px;
+      }
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #25d366;
-      box-shadow: 0 0 10px #25d366;
-    }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #25d366;
+        box-shadow: 0 0 10px #25d366;
+      }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+      }
 
-    .card {
-      background: rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 20px;
-      backdrop-filter: blur(6px);
-      transition: transform 0.2s ease;
-    }
+      .card {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 20px;
+        backdrop-filter: blur(6px);
+        transition: transform 0.2s ease;
+      }
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+      .card:hover {
+        transform: translateY(-5px);
+      }
 
-    .card h2 {
-      font-size: 1rem;
-      margin-bottom: 10px;
-      opacity: 0.9;
-    }
+      .card h2 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        opacity: 0.9;
+      }
 
-    .card p {
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
+      .card p {
+        font-size: 1.8rem;
+        font-weight: bold;
+      }
 
-    .actions {
-      margin-top: 40px;
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
+      .actions {
+        margin-top: 40px;
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
 
-    .actions a {
-      text-decoration: none;
-      padding: 12px 20px;
-      background: #25d366;
-      color: #000;
-      font-weight: bold;
-      border-radius: 8px;
-      transition: background 0.2s ease;
-    }
+      .actions a {
+        text-decoration: none;
+        padding: 12px 20px;
+        background: #25d366;
+        color: #000;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: background 0.2s ease;
+      }
 
-    .actions a:hover {
-      background: #1da851;
-    }
+      .actions a:hover {
+        background: #1da851;
+      }
 
-    footer {
-      margin-top: 60px;
-      text-align: center;
-      font-size: 0.8rem;
-      opacity: 0.6;
-    }
-  </style>
-</head>
-<body>
+      footer {
+        margin-top: 60px;
+        text-align: center;
+        font-size: 0.8rem;
+        opacity: 0.6;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🤖 Dashboard do Bot</h1>
+      <span>WhatsApp Automation</span>
+    </header>
 
-  <header>
-    <h1>🤖 Dashboard do Bot</h1>
-    <span>WhatsApp Automation</span>
-  </header>
+    <div class="container">
+      <div class="status">
+        <div class="dot"></div>
+        <span>Bot conectado e ativo</span>
+      </div>
 
-  <div class="container">
+      <div class="cards">
+        <div class="card">
+          <h2>📱 Contatos cadastrados</h2>
+          <p>128</p>
+        </div>
 
-    <div class="status">
-      <div class="dot"></div>
-      <span>Bot conectado e ativo</span>
+        <div class="card">
+          <h2>💬 Mensagens enviadas</h2>
+          <p>542</p>
+        </div>
+
+        <div class="card">
+          <h2>⚡ Status do Bot</h2>
+          <p>Online</p>
+        </div>
+
+        <div class="card">
+          <h2>🕒 Última atividade</h2>
+          <p>Agora</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <a href="/start/qr">📸 Gerar QR Code</a>
+        <a href="/contatos">👥 Ver Contatos</a>
+        <a href="/logout">🚪 Desconectar Bot</a>
+      </div>
+
+      <footer>© 2026 • Bot WhatsApp • Dashboard interno</footer>
     </div>
+    <script>
+      async function loadDashboard() {
+        try {
+          const response = await fetch("/api/dashboard", {
+            method: "GET",
+            credentials: "include", 
+          });
 
-    <div class="cards">
-      <div class="card">
-        <h2>📱 Contatos cadastrados</h2>
-        <p>128</p>
-      </div>
+          if (!response.ok) {
+            throw new Error("Não autorizado");
+          }
 
-      <div class="card">
-        <h2>💬 Mensagens enviadas</h2>
-        <p>542</p>
-      </div>
+          const data = await response.json();
 
-      <div class="card">
-        <h2>⚡ Status do Bot</h2>
-        <p>Online</p>
-      </div>
+          document.getElementById("contactsCount").textContent = data.contacts;
+          document.getElementById("messagesCount").textContent = data.messages;
+          document.getElementById("botStatus").textContent = data.status;
+          document.getElementById("lastActivity").textContent =
+            data.lastActivity;
 
-      <div class="card">
-        <h2>🕒 Última atividade</h2>
-        <p>Agora</p>
-      </div>
-    </div>
+          const dot = document.getElementById("statusDot");
+          const statusText = document.getElementById("statusText");
 
-    <div class="actions">
-      <a href="/start/qr">📸 Gerar QR Code</a>
-      <a href="/contatos">👥 Ver Contatos</a>
-      <a href="/logout">🚪 Desconectar Bot</a>
-    </div>
+          if (data.status === "Online") {
+            dot.style.background = "#25d366";
+            dot.style.boxShadow = "0 0 10px #25d366";
+            statusText.textContent = "Bot conectado e ativo";
+          } else {
+            dot.style.background = "#ff4d4d";
+            dot.style.boxShadow = "0 0 10px #ff4d4d";
+            statusText.textContent = "Bot desconectado";
+          }
+        } catch (error) {
+          console.error("Erro ao carregar dashboard:", error);
+          window.location.href = "/login";
+        }
+      }
 
-    <footer>
-      © 2026 • Bot WhatsApp • Dashboard interno
-    </footer>
+      loadDashboard();
 
-  </div>
-
-</body>
+      setInterval(loadDashboard, 10000);
+    </script>
+  </body>
 </html>
