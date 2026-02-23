@@ -1,0 +1,12 @@
+root = true
+
+[*]
+indent_style = space          # Usa espaços em vez de tabs
+indent_size = 2               # Padrão Node.js (2 espaços)
+charset = utf-8               # Codificação universal
+trim_trailing_whitespace = true # Remove espaços inúteis no fim da linha
+insert_final_newline = true    # Adiciona linha vazia ao final do arquivo
+end_of_line = lf              # Evita conflitos entre Windows e Linux (CRLF vs LF)
+
+[*.md]
+trim_trailing_whitespace = false

@@ -1,0 +1,37 @@
+name: Node.js WhatsApp Bot CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a versão LTS atual
+          cache: 'npm'
+
+      - name: Instalar Dependências
+        run: npm ci # Instala exatamente o que está no package-lock.json
+
+      - name: Verificar Erros (Lint)
+        run: npm run lint --if-present
+
+      - name: Executar Testes
+        run: npm test --if-present
+
+  # Opcional: Deploy automático se o job acima passar
+  deploy:
+    needs: quality-check
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Step
+        run: echo "Comando de deploy para sua VPS ou Cloud aqui"
