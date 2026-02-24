@@ -1,15 +1,14 @@
 import express from "express";
 import path from "path";
-import whatsappRoutes, { registerBotRoutes } from "./routes/whatsapRoutes";
-import securityMiddleware from "./middlewares/security";
+import whatsappRoutes from "./routes/whatsapRoutes";
 import { authConfig } from "./config/auth";
 import helmet from "helmet";
 import { initializeDB } from "./config/db";
 import { startWhatsappConnection } from "./utils/whatsapp/whatsapp-connect"; 
+import dashboardRoutes from "./routes/dashBoardRoutes";
 const app = express();
 
 initializeDB();
-registerBotRoutes();
 startWhatsappConnection(); 
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json());
@@ -19,9 +18,18 @@ app.use("/public", express.static(path.resolve("public")));
 app.use("/static", express.static(path.resolve("src/pages")));
 
 app.use("/", whatsappRoutes);
-app.use(securityMiddleware);
+app.use("/", dashboardRoutes);
 
 
 app.listen(authConfig.port, () => {
   console.log(`🔥 Server rodando em http://localhost:${authConfig.port}`);
+})
+.on('error', (err: any) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Erro: A porta ${authConfig.port} já está em uso.`);
+    console.error(`💡 Tente encerrar o processo anterior ou use outra porta.`);
+    process.exit(1); // Fecha o script de forma limpa
+  } else { 
+    console.error('❌ Erro inesperado no servidor:', err);
+  }
 });

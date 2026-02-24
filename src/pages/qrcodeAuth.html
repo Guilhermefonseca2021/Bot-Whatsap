@@ -8,69 +8,145 @@
       body {
         background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
         color: #ffffff;
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         height: 100vh;
         margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
       }
+
       .box {
         background: #1c1c1c;
-        padding: 36px 32px;
+        padding: 30px;
         border-radius: 14px;
         text-align: center;
         max-width: 380px;
-        width: 100%;
-        height: 400px;
+        width: 90%;
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
       }
-      img {
-        margin-top: 22px;
-        width: 250px;
-        height: 250px;
-        border-radius: 10px;
+
+      h3 { margin-bottom: 5px; color: #25d366; }
+      p { font-size: 0.9rem; opacity: 0.8; margin-bottom: 20px; }
+
+      .qr-container {
         background: #fff;
         padding: 10px;
+        border-radius: 10px;
+        display: inline-block;
         border: 3px solid #25d366;
+        line-height: 0;
       }
+
+      img {
+        width: 250px;
+        height: 250px;
+        border-radius: 5px;
+      }
+
+      .btn-check {
+        margin-top: 20px;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background-color: #25d366;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .btn-check:hover {
+        background-color: #1ebe57;
+      }
+
       .info {
-        margin-top: 14px;
-        font-size: 0.85rem;
-        opacity: 0.6;
+        margin-top: 15px;
+        font-size: 0.8rem;
+        color: #aaa;
+      }
+
+      #status-dot {
+        height: 8px;
+        width: 8px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+
+      .status-loading {
+        background-color: #ff9800 !important;
       }
     </style>
   </head>
+
   <body>
     <div class="box">
       <h3>📲 Escaneie o QR Code</h3>
-      <p>WhatsApp → Aparelhos conectados</p>
+      <p>Abra o WhatsApp > Aparelhos conectados</p>
 
-      <img id="qr" src="/public/qrcode.png" alt="QR Code" />
+      <div class="qr-container">
+        <img id="qr" src="/public/qrcode.png" alt="Carregando QR Code..." />
+      </div>
 
-      <div class="info" id="status">Iniciando conexão...</div>
+      <button id="checkBtn" class="btn-check">
+        JÁ ESCANEIEI O CÓDIGO
+      </button>
+
+      <div class="info">
+        <span id="status-dot"></span>
+        <span id="status">Aguardando leitura...</span>
+      </div>
     </div>
 
     <script>
       const img = document.getElementById("qr");
+      const btn = document.getElementById("checkBtn");
+      const statusTxt = document.getElementById("status");
+      const statusDot = document.getElementById("status-dot");
 
       function atualizarImagem() {
-        img.src = `/public/qrcode.png?t=${new Date().getTime()}`;
+        img.src = `/public/qrcode.png?t=${Date.now()}`;
       }
 
-      setTimeout(atualizarImagem, 500);
+      async function checkAuth(isManual = false) {
+        statusDot.classList.add("status-loading");
 
-      setInterval(async () => {
         try {
           const response = await fetch("/check-status");
           const data = await response.json();
+
           if (data.authenticated) {
-            window.location.href = "/dashboard";
+            statusTxt.innerText = "Autenticado! Redirecionando...";
+            statusDot.style.backgroundColor = "#25d366";
+
+            clearInterval(autoCheck);
+
+            setTimeout(() => {
+              window.location.href = "/dashboard";
+            }, 1000);
+
+          } else if (isManual) {
+            statusTxt.innerText = "Ainda não detectado. Tente novamente.";
           }
+
         } catch (e) {
-          console.log("Aguardando server...");
+          console.error("Erro na verificação:", e);
+          statusTxt.innerText = "Erro ao conectar com servidor.";
+        } finally {
+          setTimeout(() => {
+            statusDot.classList.remove("status-loading");
+          }, 500);
         }
-      }, 3000);
+      }
+
+      btn.addEventListener("click", () => checkAuth(true));
+
+      const autoCheck = setInterval(() => checkAuth(false), 5000);
+
+      setTimeout(atualizarImagem, 59000);
     </script>
   </body>
 </html>

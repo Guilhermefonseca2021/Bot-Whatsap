@@ -1,14 +1,11 @@
-import { Request, Response } from 'express';
-
-interface BotStats {
-  contatos: number;
-  mensagens: number;
-  status: string;
-  ultimaAtividade: string;
-}
+import { Request, Response } from "express";
+import path from "path";
+import { setAuthStatus } from "../utils/QRcode/generate-whatsapp-QRcode";
 
 export const index = (req: Request, res: Response): void => {
-  res.sendFile('dashboard.html', { root: './views' });
+  res.sendFile(
+    path.join(process.cwd(), "src", "pages", "dashboard.html")
+  );
 };
 
 export const listContacts = (req: Request, res: Response): void => {
@@ -16,5 +13,7 @@ export const listContacts = (req: Request, res: Response): void => {
 };
 
 export const logout = (req: Request, res: Response): void => {
-  res.redirect('/dashboard');
+  setAuthStatus(false); 
+
+  res.redirect("/start/qr");
 };
