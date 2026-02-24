@@ -8,10 +8,15 @@ export const setAuth = (status: boolean): void => {
     console.log(`Sessão atualizada: ${status}`);
 };
 
-
 export const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: { args: ['--no-sandbox'] }
+    authStrategy: new LocalAuth({
+        clientId: "bot-session", 
+        dataPath: "./.wwebjs_auth"
+    }),
+    puppeteer: {
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    }
 });
 
 export const sessionState = {

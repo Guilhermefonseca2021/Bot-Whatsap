@@ -53,15 +53,7 @@ export async function getQr(req: Request, res: Response): Promise<void> {
   );
 }
 
-export function dashboard(req: Request, res: Response): void {
-  if (!getAuthStatus()) {
-    return res.redirect("/start/qr");
-  }
 
-  res.sendFile(
-    path.join(process.cwd(), "src", "pages", "dashboard.html")
-  );
-}
 
 export function checkStatus(req: Request, res: Response): void {
   const currentQR = getCurrentQR();

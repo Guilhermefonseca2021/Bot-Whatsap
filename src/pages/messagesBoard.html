@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Bot WhatsApp - Painel de Comando</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 500px; margin-bottom: 20px; }
+        input, textarea, button { width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { background: #25d366; color: white; font-weight: bold; cursor: pointer; border: none; }
+        button:hover { background: #128c7e; }
+        .btn-test { background: #34b7f1; }
+        .contact-list { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>🚀 Painel de Controle WhatsApp</h2>
+
+    <div class="card">
+        <h3>🧪 Testar (Enviar para mim)</h3>
+        <textarea id="msgTest" placeholder="Digite a mensagem de teste..."></textarea>
+        <button class="btn-test" onclick="sendToMe()">Enviar para meu número</button>
+    </div>
+
+    <div class="card">
+        <h3>listas de Contatos</h3>
+        <textarea id="bulkMsg" placeholder="Mensagem para a lista..."></textarea>
+        
+        <div class="contact-list" id="list">
+            <label><input type="checkbox" value="5511999999999" class="contact"> João (11 99999-9999)</label><br>
+            <label><input type="checkbox" value="5511888888888" class="contact"> Maria (11 88888-8888)</label>
+        </div>
+        
+        <button onclick="sendBulk()">Enviar para Selecionados</button>
+    </div>
+
+    <script>
+        const API_URL = "/api/messages/send"; // Ajuste conforme sua rota
+
+        async function postMessage(number, message) {
+            return fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ number, message })
+            });
+        }
+
+        async function sendToMe() {
+            const msg = document.getElementById('msgTest').value;
+            await postMessage('SEU_NUMERO_AQUI', msg);
+            alert("Teste enviado!");
+        }
+
+        async function sendBulk() {
+            const msg = document.getElementById('bulkMsg').value;
+            const checkboxes = document.querySelectorAll('.contact:checked');
+            
+            for (let cb of checkboxes) {
+                console.log("Enviando para:", cb.value);
+                await postMessage(cb.value, msg);
+                await new Promise(r => setTimeout(r, 2000));
+            }
+            alert("Envios finalizados!");
+        }
+    </script>
+</body>
+</html>
