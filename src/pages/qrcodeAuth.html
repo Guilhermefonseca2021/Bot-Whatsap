@@ -98,7 +98,9 @@
         <img id="qr" src="/public/qrcode.png" alt="Carregando QR Code..." />
       </div>
 
-      <button id="checkBtn" class="btn-check">JÁ ESCANEIEI O CÓDIGO</button>
+      <button id="checkBtn" class="btn-check" onclick="checkAuth()">
+        JÁ ESCANEIEI O CÓDIGO
+      </button>
 
       <div class="info">
         <span id="status-dot"></span>
@@ -108,7 +110,6 @@
 
     <script>
       const img = document.getElementById("qr");
-      const btn = document.getElementById("checkBtn");
 
       function atualizarImagem() {
         img.src = `/public/qrcode.png?t=${Date.now()}`;
@@ -119,6 +120,11 @@
           const res = await fetch("/check-status");
           const data = await res.json();
 
+          const statusText = document.getElementById("status");
+          if (data.hasQR && !data.authenticated) {
+            statusText.innerText = "QR Code gerado.\n Aguardando leitura...";
+          }
+
           if (data.authenticated) {
             window.location.href = "/dashboard";
           }
@@ -128,8 +134,8 @@
       }
 
       const interval = setInterval(checkAuth, 5000);
-      btn.addEventListener("click", checkAuth);
-      setTimeout(atualizarImagem, 59000);
+
+      setTimeout(atualizarImagem, 149000);
     </script>
   </body>
 </html>

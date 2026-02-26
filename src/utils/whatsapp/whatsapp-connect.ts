@@ -16,12 +16,11 @@ export const setAuthStatus = (value: boolean) => {
 };
 
 export const getAuthStatus = () => isAuthenticated;
+// export function getAuthStatus(): boolean {
+//     return client.info !== undefined && client.info.wid !== undefined;
+// }
 export const getCurrentQR = () => currentQR;
 
-/**
- * Limpa o conteúdo de uma pasta de forma segura, 
- * lidando com arquivos travados pelo Windows (EPERM).
- */
 const deleteFolderContents = (folderRelativePath: string) => {
     const folderPath = path.resolve(folderRelativePath);
 

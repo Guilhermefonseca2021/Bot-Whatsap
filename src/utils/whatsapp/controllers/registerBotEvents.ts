@@ -1,29 +1,28 @@
-import { Message } from "whatsapp-web.js";
-import { handleLog, handleWelcome, handleStatus } from "../../../controllers/messageControllers";
-import { client } from "../client-whatsapp";
+// import { Message } from "whatsapp-web.js";
+// import { client } from "../client-whatsapp";
 
-export function registerBotEvents(): void {
+// export function registerBotEvents(): void {
 
-    client.removeAllListeners("message"); // evita duplicação
+//     client.removeAllListeners("message"); // evita duplicação
 
-    client.on("message", async (msg: Message) => {
-        try {
-            const text = msg.body?.toLowerCase() || "";
+//     client.on("message", async (msg: Message) => {
+//         try {
+//             const text = msg.body?.toLowerCase() || "";
 
-            handleLog(msg);
+//             handleLog(msg);
 
-            if (text === "ajuda" || text === "help") {
-                await handleWelcome(msg);
-            } 
+//             if (text === "ajuda" || text === "help") {
+//                 await handleWelcome(msg);
+//             } 
             
-            else if (text === "!status") {
-                await handleStatus(msg);
-            }
+//             else if (text === "!status") {
+//                 await handleStatus(msg);
+//             }
 
-        } catch (error) {
-            console.error("❌ Erro ao processar mensagem:", error);
-        }
-    });
+//         } catch (error) {
+//             console.error("❌ Erro ao processar mensagem:", error);
+//         }
+//     });
 
-    console.log("✅ Eventos do WhatsApp registrados.");
-}
+//     console.log("✅ Eventos do WhatsApp registrados.");
+// }
