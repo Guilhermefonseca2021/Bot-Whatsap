@@ -6,7 +6,7 @@ import helmet from "helmet";
 import { initializeDB } from "./config/db";
 import { startWhatsappConnection } from "./utils/whatsapp/whatsapp-connect"; 
 import dashboardRoutes from "./routes/dashBoardRoutes";
-import messagesRoutes from "./routes/messagesRoutes";
+import messageRoutes from "./routes/messagesRoutes";
 const app = express();
 
 initializeDB();
@@ -20,7 +20,7 @@ app.use("/static", express.static(path.resolve("src/pages")));
 
 app.use("/", whatsappRoutes);
 app.use("/", dashboardRoutes);
-app.use("/", messagesRoutes);
+app.use("/", messageRoutes);
 
 
 app.listen(authConfig.port, () => {

@@ -9,15 +9,12 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
     }
 
     try {
-        // 1. Limpa o número (deixa apenas dígitos)
         let formattedNumber = number.replace(/\D/g, '');
 
-        // 2. Adiciona o sufixo do WhatsApp se não tiver
         if (!formattedNumber.endsWith('@c.us')) {
             formattedNumber = `${formattedNumber}@c.us`;
         }
 
-        // 3. Envia a mensagem
         await client.sendMessage(formattedNumber, message);
 
         console.log(`✅ Mensagem enviada para: ${formattedNumber}`);
@@ -29,9 +26,7 @@ export const sendMessage = async (req: Request, res: Response): Promise<any> => 
     }
 };
 
-/**
- * Envia para o próprio usuário logado (Teste)
- */
+
 export const sendToMe = async (req: Request, res: Response): Promise<any> => {
     const { message } = req.body;
 
