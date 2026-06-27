@@ -10,109 +10,213 @@
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: "Inter", Arial, Helvetica, sans-serif;
+      }
+
+      :root {
+        --bg: #090b11;
+        --bg2: #0f131b;
+
+        --surface: #151a23;
+        --surface-hover: #1a2230;
+
+        --border: #262d39;
+
+        --primary: #4f7cff;
+        --primary-hover: #6792ff;
+
+        --text: #f5f7fa;
+        --text-secondary: #a8b1c2;
+
+        --success: #22c55e;
+        --danger: #ef4444;
+
+        --shadow: rgba(0, 0, 0, 0.45);
+        --glow: rgba(79, 124, 255, 0.22);
       }
 
       body {
         min-height: 100vh;
-        background: #0f2027;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: #fff;
+        color: var(--text);
+
+        background:
+          radial-gradient(
+            circle at top right,
+            rgba(79, 124, 255, 0.12),
+            transparent 35%
+          ),
+          radial-gradient(
+            circle at bottom left,
+            rgba(124, 92, 255, 0.08),
+            transparent 30%
+          ),
+          linear-gradient(180deg, var(--bg), var(--bg2));
       }
 
       header {
-        padding: 20px 30px;
-        background: rgba(0, 0, 0, 0.3);
+        height: 72px;
+
+        padding: 0 40px;
+
         display: flex;
         justify-content: space-between;
         align-items: center;
+
+        background: rgba(21, 26, 35, 0.75);
+
+        backdrop-filter: blur(18px);
+
+        border-bottom: 1px solid var(--border);
+
+        position: sticky;
+        top: 0;
+
+        z-index: 100;
       }
 
       header h1 {
-        font-size: 1.4rem;
+        font-size: 24px;
+        font-weight: 700;
       }
 
       header span {
-        font-size: 0.9rem;
-        opacity: 0.8;
+        color: var(--text-secondary);
+        font-size: 14px;
       }
 
       .container {
-        padding: 30px;
-        max-width: 1200px;
+        max-width: 1280px;
+
         margin: auto;
+
+        padding: 40px;
       }
 
       .status {
         display: flex;
+
         align-items: center;
-        gap: 10px;
-        margin-bottom: 30px;
+
+        gap: 12px;
+
+        margin-bottom: 32px;
+
+        color: var(--text-secondary);
       }
 
       .dot {
         width: 12px;
+
         height: 12px;
+
         border-radius: 50%;
-        background: #25d366;
-        box-shadow: 0 0 10px #25d366;
+
+        background: var(--success);
+
+        box-shadow:
+          0 0 10px var(--success),
+          0 0 20px rgba(34, 197, 94, 0.35);
       }
 
       .cards {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 20px;
+
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+        gap: 22px;
       }
 
       .card {
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
-        padding: 20px;
-        backdrop-filter: blur(6px);
-        transition: transform 0.2s ease;
+        background: var(--surface);
+
+        border: 1px solid var(--border);
+
+        border-radius: 16px;
+
+        padding: 24px;
+
+        transition: 0.25s;
+
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
       }
 
       .card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-6px);
+
+        border-color: var(--primary);
+
+        background: var(--surface-hover);
+
+        box-shadow:
+          0 0 0 1px rgba(79, 124, 255, 0.15),
+          0 18px 35px rgba(0, 0, 0, 0.45),
+          0 0 30px var(--glow);
       }
 
       .card h2 {
-        font-size: 1rem;
-        margin-bottom: 10px;
-        opacity: 0.9;
+        font-size: 15px;
+
+        color: var(--text-secondary);
+
+        margin-bottom: 18px;
+
+        font-weight: 500;
       }
 
       .card p {
-        font-size: 1.8rem;
-        font-weight: bold;
+        font-size: 36px;
+
+        font-weight: 700;
+
+        letter-spacing: -1px;
       }
 
       .actions {
-        margin-top: 40px;
+        margin-top: 42px;
+
         display: flex;
-        gap: 15px;
+
+        gap: 16px;
+
         flex-wrap: wrap;
       }
 
       .actions a {
         text-decoration: none;
-        padding: 12px 20px;
-        background: #25d366;
-        color: #000;
-        font-weight: bold;
-        border-radius: 8px;
-        transition: background 0.2s ease;
+
+        color: white;
+
+        background: var(--surface);
+
+        border: 1px solid var(--border);
+
+        padding: 14px 22px;
+
+        border-radius: 12px;
+
+        transition: 0.25s;
+
+        font-weight: 600;
       }
 
       .actions a:hover {
-        background: #1da851;
+        background: var(--primary);
+
+        border-color: var(--primary);
+
+        box-shadow: 0 0 25px var(--glow);
+
+        transform: translateY(-2px);
       }
 
       footer {
-        margin-top: 60px;
+        margin-top: 70px;
+
+        color: var(--text-secondary);
+
         text-align: center;
-        font-size: 0.8rem;
-        opacity: 0.6;
+
+        font-size: 13px;
       }
     </style>
   </head>
@@ -124,29 +228,29 @@
 
     <div class="container">
       <div class="status">
-        <div class="dot"></div>
-        <span>Bot conectado e ativo</span>
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">Bot conectado e ativo</span>
       </div>
 
       <div class="cards">
         <div class="card">
           <h2>📱 Contatos cadastrados</h2>
-          <p>128</p>
+          <p id="contactsCount">128</p>
         </div>
 
         <div class="card">
           <h2>💬 Mensagens enviadas</h2>
-          <p>542</p>
+          <p id="messagesCount">542</p>
         </div>
 
         <div class="card">
           <h2>⚡ Status do Bot</h2>
-          <p>Online</p>
+          <p id="botStatus">Online</p>
         </div>
 
         <div class="card">
           <h2>🕒 Última atividade</h2>
-          <p>Agora</p>
+          <p id="lastActivity">Agora</p>
         </div>
       </div>
 
@@ -159,46 +263,63 @@
       <footer>© 2026 • Bot WhatsApp • Dashboard interno</footer>
     </div>
     <script>
+      const elements = {
+        contacts: document.getElementById("contactsCount"),
+        messages: document.getElementById("messagesCount"),
+        status: document.getElementById("botStatus"),
+        activity: document.getElementById("lastActivity"),
+        dot: document.getElementById("statusDot"),
+        statusText: document.getElementById("statusText"),
+      };
+
+      function updateUI(authenticated) {
+        elements.contacts.textContent = "--";
+        elements.messages.textContent = "--";
+        elements.activity.textContent = new Date().toLocaleTimeString();
+
+        if (authenticated) {
+          elements.status.textContent = "Online";
+          elements.dot.style.background = "#25d366";
+          elements.dot.style.boxShadow = "0 0 10px #25d366";
+          elements.statusText.textContent = "Bot conectado e ativo";
+        } else {
+          elements.status.textContent = "Offline";
+          elements.dot.style.background = "#ff4d4d";
+          elements.dot.style.boxShadow = "0 0 10px #ff4d4d";
+          elements.statusText.textContent = "Bot aguardando autenticação";
+        }
+      }
+
       async function loadDashboard() {
         try {
-          const response = await fetch("/api/dashboard", {
-            method: "GET",
-            credentials: "include", 
-          });
+          const response = await fetch("/check-status");
 
           if (!response.ok) {
-            throw new Error("Não autorizado");
+            throw new Error("Falha ao consultar status");
           }
 
           const data = await response.json();
 
-          document.getElementById("contactsCount").textContent = data.contacts;
-          document.getElementById("messagesCount").textContent = data.messages;
-          document.getElementById("botStatus").textContent = data.status;
-          document.getElementById("lastActivity").textContent =
-            data.lastActivity;
-
-          const dot = document.getElementById("statusDot");
-          const statusText = document.getElementById("statusText");
-
-          if (data.status === "Online") {
-            dot.style.background = "#25d366";
-            dot.style.boxShadow = "0 0 10px #25d366";
-            statusText.textContent = "Bot conectado e ativo";
-          } else {
-            dot.style.background = "#ff4d4d";
-            dot.style.boxShadow = "0 0 10px #ff4d4d";
-            statusText.textContent = "Bot desconectado";
+          if (!data.authenticated) {
+            window.location.href = "/start/qr";
+            return;
           }
-        } catch (error) {
-          console.error("Erro ao carregar dashboard:", error);
-          window.location.href = "/login";
+
+          updateUI(true);
+        } catch (err) {
+          console.error(err);
+
+          // Servidor indisponível
+          elements.status.textContent = "Offline";
+          elements.statusText.textContent = "Servidor indisponível";
+          elements.dot.style.background = "#ff4d4d";
+          elements.dot.style.boxShadow = "0 0 10px #ff4d4d";
         }
       }
 
       loadDashboard();
 
-      setInterval(loadDashboard, 10000);
+      setInterval(loadDashboard, 5000);
     </script>
   </body>
 </html>

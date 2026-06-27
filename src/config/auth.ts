@@ -5,7 +5,7 @@ dotenv.config();
 export const authConfig = {
   username: process.env.AUTH_USERNAME || "admin",
   password: process.env.AUTH_PASSWORD || "password",
-  port: Number(process.env.PORT) || 3000,
+  port: Number(process.env.PORT) || 3333,
 
   nodeEnv: process.env.NODE_ENV || "development",
   isDev: process.env.NODE_ENV !== "production",

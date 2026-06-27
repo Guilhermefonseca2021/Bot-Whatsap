@@ -1,68 +1,314 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Bot WhatsApp - Painel de Comando</title>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mensagens • Bot WhatsApp</title>
+
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f0f2f5; }
-        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 500px; margin-bottom: 20px; }
-        input, textarea, button { width: 100%; margin: 10px 0; padding: 10px; border-radius: 5px; border: 1px solid #ccc; }
-        button { background: #25d366; color: white; font-weight: bold; cursor: pointer; border: none; }
-        button:hover { background: #128c7e; }
-        .btn-test { background: #34b7f1; }
-        .contact-list { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+      /* =========================
+   BASE
+========================= */
+      :root {
+        --bg: #090b11;
+        --bg2: #0f131b;
+        --surface: #151a23;
+        --surface-hover: #1a2230;
+        --border: #262d39;
+        --primary: #4f7cff;
+        --primary-hover: #6792ff;
+        --text: #f5f7fa;
+        --text-secondary: #a8b1c2;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Inter, Arial;
+      }
+
+      body {
+        background: linear-gradient(180deg, var(--bg), var(--bg2));
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: var(--text);
+        overflow: hidden;
+      }
+
+      /* =========================
+   LAYOUT PRINCIPAL
+========================= */
+      main {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        overflow: hidden;
+      }
+
+      header {
+        padding: 14px;
+      }
+      /* =========================
+   CONTATOS
+========================= */
+      .contacts {
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+      }
+
+      .contact {
+        padding: 16px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        transition: 0.2s;
+      }
+
+      .contact:hover {
+        background: var(--surface-hover);
+      }
+
+      .contact strong {
+        display: block;
+      }
+
+      .contact span {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+
+      /* =========================
+   CHAT
+========================= */
+      .chat {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .chat-header {
+        padding: 16px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .msg {
+        padding: 12px 14px;
+        border-radius: 12px;
+        max-width: 70%;
+        word-wrap: break-word;
+      }
+
+      .sent {
+        background: var(--primary);
+        align-self: flex-end;
+      }
+
+      .received {
+        background: #1a2230;
+        align-self: flex-start;
+      }
+
+      /* =========================
+   INPUT
+========================= */
+      .input {
+        display: flex;
+        gap: 10px;
+        padding: 16px;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+      }
+
+      input {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #1a2230;
+        color: white;
+        outline: none;
+      }
+
+      button {
+        width: 120px;
+        border: none;
+        background: var(--primary);
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: var(--primary-hover);
+      }
+
+      /* =========================
+   RESPONSIVO TABLET
+========================= */
+      @media (max-width: 900px) {
+        main {
+          grid-template-columns: 260px 1fr;
+        }
+
+        .msg {
+          max-width: 85%;
+        }
+      }
+
+      /* =========================
+   RESPONSIVO MOBILE
+========================= */
+      @media (max-width: 700px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+
+        .contacts {
+          display: none; /* vira estilo WhatsApp mobile (chat only) */
+        }
+
+        .chat {
+          width: 100%;
+        }
+
+        .msg {
+          max-width: 90%;
+        }
+
+        .input {
+          flex-direction: column;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
 
-    <h2>🚀 Painel de Controle WhatsApp</h2>
+  <body>
+    <header>
+      <h2>🤖 WhatsApp Bot</h2>
+    </header>
 
-    <div class="card">
-        <h3>🧪 Testar (Enviar para mim)</h3>
-        <textarea id="msgTest" placeholder="Digite a mensagem de teste..."></textarea>
-        <button class="btn-test" onclick="sendToMe()">Enviar para meu número</button>
-    </div>
+    <main>
+      <!-- CONTATOS -->
+      <section class="contacts" id="contacts"></section>
 
-    <div class="card">
-        <h3>listas de Contatos</h3>
-        <textarea id="bulkMsg" placeholder="Mensagem para a lista..."></textarea>
-        
-        <div class="contact-list" id="list">
-            <label><input type="checkbox" value="5511999999999" class="contact"> João (11 99999-9999)</label><br>
-            <label><input type="checkbox" value="5511888888888" class="contact"> Maria (11 88888-8888)</label>
+      <!-- CHAT -->
+      <section class="chat">
+        <div class="chat-header">
+          <h3 id="chatName">Selecione um contato</h3>
         </div>
-        
-        <button onclick="sendBulk()">Enviar para Selecionados</button>
-    </div>
+
+        <div class="messages" id="messages"></div>
+
+        <div class="input">
+          <input id="message" placeholder="Digite sua mensagem" />
+          <button onclick="sendMessage()">Enviar</button>
+        </div>
+      </section>
+    </main>
 
     <script>
-        const API_URL = "/send";
+      let currentContact = null;
 
-        async function postMessage(number, message) {
-            return fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ number, message })
-            });
+      /* =======================
+   CARREGAR CONTATOS
+======================= */
+      async function loadContacts() {
+        const res = await fetch("/contacts");
+        const data = await res.json();
+
+        const container = document.getElementById("contacts");
+        container.innerHTML = "";
+
+        data.forEach((c) => {
+          const div = document.createElement("div");
+          div.className = "contact";
+
+          div.onclick = () => openChat(c.id, c.name);
+
+          div.innerHTML = `
+      <strong>${c.name}</strong>
+      <span>${c.lastMessage || ""}</span>
+    `;
+
+          container.appendChild(div);
+        });
+      }
+
+      /* =======================
+   ABRIR CHAT
+======================= */
+      async function openChat(id, name) {
+        currentContact = id;
+
+        document.getElementById("chatName").innerText = name;
+
+        const res = await fetch(`/messages/${id}`);
+        const data = await res.json();
+
+        const box = document.getElementById("messages");
+        box.innerHTML = "";
+
+        data.forEach((m) => {
+          const div = document.createElement("div");
+
+          div.className = "msg " + (m.from === "me" ? "sent" : "received");
+
+          div.innerText = m.text;
+
+          box.appendChild(div);
+        });
+      }
+
+      /* =======================
+   ENVIAR MENSAGEM
+======================= */
+      async function sendMessage() {
+        const message = document.getElementById("message").value;
+
+        if (!currentContact) {
+          alert("Selecione um contato");
+          return;
         }
 
-        async function sendToMe() {
-            const msg = document.getElementById('msgTest').value;
-            await postMessage('SEU_NUMERO_AQUI', msg);
-            alert("Teste enviado!");
-        }
+        const res = await fetch("/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            number: currentContact,
+            message,
+          }),
+        });
 
-        async function sendBulk() {
-            const msg = document.getElementById('bulkMsg').value;
-            const checkboxes = document.querySelectorAll('.contact:checked');
-            
-            for (let cb of checkboxes) {
-                console.log("Enviando para:", cb.value);
-                await postMessage(cb.value, msg);
-                await new Promise(r => setTimeout(r, 2000));
-            }
-            alert("Envios finalizados!");
+        const data = await res.json();
+
+        if (data.success) {
+          const div = document.createElement("div");
+          div.className = "msg sent";
+          div.innerText = message;
+
+          document.getElementById("messages").appendChild(div);
+          document.getElementById("message").value = "";
         }
+      }
+
+      /* INIT */
+      loadContacts();
     </script>
-</body>
+  </body>
 </html>

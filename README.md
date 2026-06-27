@@ -40,6 +40,8 @@ async function sendMessageToContact(number: string, message: string) {
 }
 ```
 
+<img width="1376" height="768" alt="Image" src="https://github.com/user-attachments/assets/d8c709fa-73bf-4e2e-b9a9-fd752dbf1fdf" />
+
 ## 🚧 Contribuições
 
 Sinta-se à vontade para abrir issues, sugerir melhorias ou enviar pull requests! 🤝

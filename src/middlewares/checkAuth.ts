@@ -1,14 +1,13 @@
-import { getAuthStatus } from "../utils/QRcode/generate-whatsapp-QRcode";
 import { Request, Response, NextFunction } from "express";
+// import { client } from "../utils/whatsapp/whatsapp-connection"; can check client.info 
+import { isAuthenticated } from "../utils/state/whatsapp-state";
 
 export default function checkAuth(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
-  const isAuthenticated = getAuthStatus();
-
-  if (!isAuthenticated) {
+  if (!isAuthenticated()) {
     return res.redirect("/start/qr");
   }
 

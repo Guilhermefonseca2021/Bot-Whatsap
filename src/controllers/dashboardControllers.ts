@@ -1,23 +1,23 @@
 import { Request, Response } from "express";
 import path from "path";
-import { getAuthStatus, setAuthStatus } from "../utils/QRcode/generate-whatsapp-QRcode";
+import {
+  setAuthenticated,
+} from "../utils/state/whatsapp-state";
 
 export function dashboard(req: Request, res: Response): void {
-  if (!getAuthStatus()) {
-    return res.redirect("/start/qr");
-  }
-
   res.sendFile(
     path.join(process.cwd(), "src", "pages", "dashboard.html")
   );
 }
 
-export const listContacts = (req: Request, res: Response): void => {
-  res.send("<h1>Lista de Contatos</h1>");
+export const listContacts = (_req: Request, res: Response): void => {
+  res.sendFile(
+    path.join(process.cwd(), "src", "pages", "messagesBoard.html")
+  );
 };
 
-export const logout = (req: Request, res: Response): void => {
-  setAuthStatus(false); 
+export const logout = (_req: Request, res: Response): void => {
+  setAuthenticated(false);
 
   res.redirect("/start/qr");
 };

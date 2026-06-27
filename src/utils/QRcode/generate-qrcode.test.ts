@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import fs from "fs";
 import { assert } from "console";
 import QRCode from "qrcode";
-import { client } from "../whatsapp/client-whatsapp";
+import { client } from "../whatsapp/whatsapp-connection.ts";
 
 describe("generateWhatsAppQRcode", async () => {
   it("should create the file", () => {

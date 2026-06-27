@@ -1,23 +1,38 @@
-// src/config/db.ts
 import { Low } from "lowdb";
 import { JSONFile } from "lowdb/node";
-import type { ContactInfo } from "./contact-info";
+
+export type Contact = {
+  id: string;
+  name: string;
+  lastMessage?: string;
+};
+
+export type Message = {
+  from: string;
+  to: string;
+  text: string;
+  timestamp: number;
+};
 
 export interface DBSchema {
-  contatos: ContactInfo[];
+  contatos: Contact[];
+  mensagens: Message[];
 }
 
 const adapter = new JSONFile<DBSchema>("./src/db/database.json");
 
 export const db = new Low<DBSchema>(adapter, {
   contatos: [],
+  mensagens: [],
 });
 
 export async function initializeDB() {
   await db.read();
 
-  if (!db.data) {
-    db.data = { contatos: [] };
-    await db.write();
-  }
+  db.data ||= {
+    contatos: [],
+    mensagens: [],
+  };
+
+  await db.write();
 }

@@ -2,13 +2,14 @@ import path from "node:path";
 import { Request, Response } from "express";
 import {
   generateQRCodePayload,
-  getAuthStatus,
-  setAuthStatus,
+  clearQR,
+  getCurrentQRImage,
 } from "../utils/QRcode/generate-whatsapp-QRcode";
-import { getCurrentQR } from "../utils/whatsapp/whatsapp-connect";
-import * as fs from "fs/promises";
-
-const qrPath = path.join(process.cwd(), "public", "qrcode.png");
+import {
+  isAuthenticated,
+  setAuthenticated,
+} from "../utils/state/whatsapp-state";
+import { restartWhatsapp } from "../utils/whatsapp/whatsapp-connection";
 
 export const cleanAndGenerateQR = async (qr: string): Promise<void> => {
   try {
@@ -25,42 +26,54 @@ export const cleanAndGenerateQR = async (qr: string): Promise<void> => {
   }
 };
 
-export const finalizeAuth = async (): Promise<void> => {
-  setAuthStatus(true);
+export async function qrImage(req: Request, res: Response): Promise<void> {
+  setAuthenticated(false);
+  const image = getCurrentQRImage();
 
-  try {
-    await fs.unlink(qrPath);
-    console.log("🧹 QR Code removido após autenticação.");
-  } catch (err) {
+  if (!image) {
+    res.status(404).json({
+      success: false,
+    });
+    return;
   }
-};
+
+  res.json({
+    success: true,
+    image,
+  });
+}
 
 export async function getQr(req: Request, res: Response): Promise<void> {
-  if (getAuthStatus()) {
+  // setAuthenticated(true) // ative caso queira testar a UI
+  if (isAuthenticated()) {
     return res.redirect("/dashboard");
   }
 
-  const currentQR = getCurrentQR();
+  console.log("QR existe?", !!getCurrentQRImage());
+  const image = getCurrentQRImage();
 
-  if (!currentQR) {
-    return res.sendFile(
-      path.join(process.cwd(), "src", "pages", "waitingQr.html")
-    );
+  if (!image) {
+    return res.sendFile(path.join(process.cwd(), "src/pages/waitingQr.html"));
   }
 
-  return res.sendFile(
-    path.join(process.cwd(), "src", "pages", "qrcodeAuth.html")
-  );
+  return res.sendFile(path.join(process.cwd(), "src/pages/qrcodeAuth.html"));
 }
 
+export const logout = async (_req: Request, res: Response) => {
+  await restartWhatsapp();
 
+  res.redirect("/start/qr");
+};
 
-export function checkStatus(req: Request, res: Response): void {
-  const currentQR = getCurrentQR();
-  const isAuth = getAuthStatus();
+export async function finalizeAuth(): Promise<void> {
+  setAuthenticated(true);
 
+  clearQR();
+}
+
+export function checkStatus(req: Request, res: Response) {
   res.json({
-    hasQR: !!currentQR,
-    authenticated: isAuth,
+    authenticated: isAuthenticated(),
+    hasQR: !!getCurrentQRImage(),
   });
 }
